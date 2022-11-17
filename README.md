@@ -61,7 +61,12 @@
 ## Spring Security
 
 ## O que é
+Spring Security é a *framework* padrão de autenticação e controle de acesso utilizado pelas aplicações Spring.
+Ele tem um enfoque principalmente em autenticação e autorização, fornecendo uma camada de proteção contra ataques comuns (como fixação de sessão, *clickjacking*, dentre outros).
+
 ## Como funciona
+O Spring Security intercepta as requisições recebidas e valida tanto *payload* quanto os *headers* conforme uma séries de regras definidas pelo desenvolvedor.
+
 ### Cenários de uso (User details, OAuth com Token)
 ### Cadeia de Filtros
 ### Autorização e Roles
