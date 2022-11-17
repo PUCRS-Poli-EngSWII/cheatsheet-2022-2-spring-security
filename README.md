@@ -65,13 +65,49 @@ Spring Security é a *framework* padrão de autenticação e controle de acesso 
 Ele tem um enfoque principalmente em autenticação e autorização, fornecendo uma camada de proteção contra ataques comuns (como fixação de sessão, *clickjacking*, dentre outros).
 
 ## Como funciona
-O Spring Security intercepta as requisições recebidas e valida tanto *payload* quanto os *headers* conforme uma séries de regras definidas pelo desenvolvedor.
+O Spring Security intercepta as requisições recebidas e valida tanto os *payload* quanto os *headers* conforme uma séries de regras definidas pelo desenvolvedor.
+
+Por padrão, ao adicionar o Spring Security ao *classpath*, ele irá exigir autenticação "basic" para todos os *endpoints* HTTP. Para configurar o Spring Security, deve-se criar uma classe anotada com `@Configuration` e `@EnableWebSecurity`. As regras de acesso e autenticação estão todas em `@Bean` dentro desta classe. Por exemplo:
+
+```java
+@Configuration
+@EnableWebSecurity
+public class WebSecurityConfig {
+
+	@Bean
+	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+		http
+			.authorizeHttpRequests((requests) -> requests
+				.antMatchers("/", "/home").permitAll()
+				.anyRequest().authenticated()
+			)
+			.formLogin((form) -> form
+				.loginPage("/login")
+				.permitAll()
+			)
+			.logout((logout) -> logout.permitAll());
+
+		return http.build();
+	}
+}
+```
 
 ### Cenários de uso (User details, OAuth com Token)
+#### User details
+
+#### OAuth com Token
+
 ### Cadeia de Filtros
+
+
 ### Autorização e Roles
+
+
 ## Cookbook
+
 ### Como configurar
+
+
 ### Exemplos
 ### Autenticação com User Details
 ### Exemplos
@@ -81,5 +117,3 @@ O Spring Security intercepta as requisições recebidas e valida tanto *payload*
 ### Exemplos
 ### Autorização (com roles) de RestControllers e Beans
 ### Exemplos
-
-
