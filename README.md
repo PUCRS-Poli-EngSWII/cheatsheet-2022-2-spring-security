@@ -200,6 +200,13 @@ Cadeias de filtros são um assunto bastante complexo na Spring Security. Para ma
 
 ### Autorização e Roles
 
+A tradução de "*roles*" é "papel", no sentido de "papel de um ator". Dentro de uma sistema complexo empresarial, há várias pessoas com papéis diferentes interagindo com o sistema: administradores, desenvolvedores, usuários, etc. Esses indivíduos não podem ter o mesmo grau de visibilidade para dentro do sistema. Uma maneira de organizar essas permissões seria:
+
+  1. O administrador tem permissão de efetuar qualquer ação
+  2. O usuário pode ler e atualizar apenas as informações relevantes a ele
+  3. Os desenvolvedores podem ler informaçes do sistema completo, mas cada equipe de desenvolvimento só pode escrever na parte do sistema que lhe compete
+ 
+ Isso significa que cada "papel" que alguém exerce no sistema deve corresponder com uma séria de permissões, ou autorizações (ou ainda, privilégios).
 
 ## Cookbook
 
