@@ -168,6 +168,35 @@ Estamos usando o tipo de concessão "senha" (`authorizedGrantTypes("password")`,
 
 ### Cadeia de Filtros
 
+Cadeias de filtros são o principal mecanismo usado pela Spring Security para garantir a segurança de uma aplicação. Trata-se de um *pipeline* de validações onde a cada estágio só passam as *requests* que puderem ser validadas.
+
+Todos os `HttpServletRequest` passam pela cadeia de filtros antes de chegar nas controllers. Vários desses filtros já são configurados automaticamente pela Spring. Você pode vê-los ao setar a opção `logging.level.org.springframework.security.web.FilterChainProxy=DEBUG` em `application.properties`. Um *output* possível seria:
+
+```
+o.s.security.web.FilterChainProxy        : /home at position 1 of 15 in additional filter chain; firing Filter: 'WebAsyncManagerIntegrationFilter'
+o.s.security.web.FilterChainProxy        : /home at position 2 of 15 in additional filter chain; firing Filter: 'SecurityContextPersistenceFilter'
+o.s.security.web.FilterChainProxy        : /home at position 3 of 15 in additional filter chain; firing Filter: 'HeaderWriterFilter'
+o.s.security.web.FilterChainProxy        : /home at position 4 of 15 in additional filter chain; firing Filter: 'CsrfFilter'
+o.s.security.web.FilterChainProxy        : /home at position 5 of 15 in additional filter chain; firing Filter: 'LogoutFilter'
+o.s.security.web.FilterChainProxy        : /home at position 6 of 15 in additional filter chain; firing Filter: 'UsernamePasswordAuthenticationFilter'
+o.s.security.web.FilterChainProxy        : /home at position 7 of 15 in additional filter chain; firing Filter: 'DefaultLoginPageGeneratingFilter'
+o.s.security.web.FilterChainProxy        : /home at position 8 of 15 in additional filter chain; firing Filter: 'DefaultLogoutPageGeneratingFilter'
+o.s.security.web.FilterChainProxy        : /home at position 9 of 15 in additional filter chain; firing Filter: 'BasicAuthenticationFilter'
+o.s.security.web.FilterChainProxy        : /home at position 10 of 15 in additional filter chain; firing Filter: 'RequestCacheAwareFilter'
+o.s.security.web.FilterChainProxy        : /home at position 11 of 15 in additional filter chain; firing Filter: 'SecurityContextHolderAwareRequestFilter'
+o.s.security.web.FilterChainProxy        : /home at position 12 of 15 in additional filter chain; firing Filter: 'AnonymousAuthenticationFilter'
+o.s.security.web.FilterChainProxy        : /home at position 13 of 15 in additional filter chain; firing Filter: 'SessionManagementFilter'
+o.s.security.web.FilterChainProxy        : /home at position 14 of 15 in additional filter chain; firing Filter: 'ExceptionTranslationFilter'
+o.s.security.web.FilterChainProxy        : /home at position 15 of 15 in additional filter chain; firing Filter: 'FilterSecurityInterceptor'
+```
+
+Podemos verificar que **os filtros são executados em uma ordem específica**. É possível delegar filtros para um outro `bean` usando o `DelegatingFilterProxy` e o `FilterChainProxy`.
+
+É possível definir várias cadeias de filtros, e selecionar qual usar de acordo com o tipo de requisição.
+
+É possível ainda, definir cadeias de filtros diferentes e independentes para aplicações REST, communicações internas e outras aplicações.
+
+Cadeias de filtros são um assunto bastante complexo na Spring Security. Para mais informações, veja a [última versão da documentação oficial](https://docs.spring.io/spring-security/site/docs/5.3.9.RELEASE/reference/html5/).
 
 ### Autorização e Roles
 
