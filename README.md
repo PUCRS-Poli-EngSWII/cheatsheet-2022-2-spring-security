@@ -95,6 +95,33 @@ public class WebSecurityConfig {
 ### Cenários de uso (User details, OAuth com Token)
 #### User details
 
+Para proteger as informações do usuário, o Spring Security oferece a interface `UserDetailsService`, a qual contém um único método:
+
+```java
+UserDetails loadUserByUsername(String username) throws UsernameNotFoundException
+```
+
+Este método não é chamado pela Spring Security diretamente em nenhum lugar, e **só pode recuperar informações de usuários que foram encapsuladas em objetos `Authentication`**. Um exemplo de como usar esta interface seria:
+
+```java
+@Service
+public class CustomUserDetailService implements UserDetailsService {
+
+    @Autowired
+    private CustomerRepository customerRepository;
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        final CustomerEntity customer = customerRepository.findByEmail(username);
+        if (customer == null) {
+            throw new UsernameNotFoundException(username);
+        }
+        UserDetails user = User.withUsername(customer.getEmail()).password(customer.getPassword()).authorities("USER").build();
+        return user;
+    }
+}
+```
+
 #### OAuth com Token
 
 OAuth é um protocolo de autorização para que o dono de um recurso permita que terceiros tenham acesso limitado a um serviço HTTP, sem que esses terceiros possam ver a identidade ou credenciais do usuário. Esse tipo de protocolo pode ser usado para, por exemplo, permitir que o *login* de um *website* seja feito através da conta do Google, ou da Microsoft, etc. O usuário efetua o seu login em uma dessas plataformas e nós pedimos permissão para acessar dados e/ou serviços específicos do usuário, que estão associados a estas contas (por exemplo, o Google Drive).
@@ -112,8 +139,7 @@ public class UserConfig extends WebSecurityConfigurerAdapter {
    }
    @Bean
    public PasswordEncoder passwordEncoder() {
-      /** IMPORTANTE: em aplicacoes reais, nao use o NoOpPasswordEncoder */
-      return NoOpPasswordEncoder.getInstance(); 
+      return new BCryptPasswordEncoder(); 
    } 
    @Override 
    @Bean 
@@ -138,7 +164,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 }
 ```
 
-Estamos usando o tipo de concessão "senha" (`authorizedGrantTypes("password")`, acima). A senha do usuário obviamente deve ser criptografada (por isso que dissemos para não usar o `NoOpPasswordEncoder`. Para este tipo de autorização, o usuário fornece o seu nome de usuário, senha e escopo da concessão para a aplicação cliente, que então usa essas informações, junto com as suas credencias, para pedir os `tokens` de autorização do servidor de autorização.
+Estamos usando o tipo de concessão "senha" (`authorizedGrantTypes("password")`, acima). A senha do usuário obviamente deve ser criptografada (não use a classe `NoOpPasswordEncoder`). Para este tipo de autorização, o usuário fornece o seu nome de usuário, senha e escopo da concessão para a aplicação cliente, que então usa essas informações, junto com as suas credencias, para pedir os `tokens` de autorização do servidor de autorização.
 
 ### Cadeia de Filtros
 
