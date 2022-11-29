@@ -211,13 +211,45 @@ A tradução de "*roles*" é "papel", no sentido de "papel de um ator". Dentro d
 ## Cookbook
 
 ### Como configurar
-
-
 ### Exemplos
+
 ### Autenticação com User Details
+
+Implemente a interface `UserDetailsService` no serviço desejado, conforme explicado anteriormente. Após, configure o `WebSecurityConfigurerAdpater` para autenticar o usuário com base em sua senha.
+
 ### Exemplos
+
+```java
+@Configuration
+@EnableWebSecurity
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Resource
+    private UserDetailsService userDetailsService;
+
+    @Bean
+    public DaoAuthenticationProvider authProvider() {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(userDetailsService);
+        authProvider.setPasswordEncoder(passwordEncoder());
+        return authProvider;
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.authenticationProvider(authProvider());
+    }
+}
+```
+
 ### Autorização (com roles) de RestControllers e Beans
 ### Exemplos
+
 ### Autenticação com OAuth e Token
 ### Exemplos
 ### Autorização (com roles) de RestControllers e Beans
