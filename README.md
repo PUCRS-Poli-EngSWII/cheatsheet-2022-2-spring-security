@@ -196,7 +196,7 @@ Podemos verificar que **os filtros são executados em uma ordem específica**. �
 
 É possível ainda, definir cadeias de filtros diferentes e independentes para aplicações REST, communicações internas e outras aplicações.
 
-Cadeias de filtros são um assunto bastante complexo na Spring Security. Para mais informações, veja a [última versão da documentação oficial](https://docs.spring.io/spring-security/site/docs/5.3.9.RELEASE/reference/html5/).
+Cadeias de filtros são um assunto bastante complexo na Spring Security. Para mais informações, veja a [documentação oficial](https://docs.spring.io/spring-security/reference/index.html).
 
 ### Autorização e Roles
 
