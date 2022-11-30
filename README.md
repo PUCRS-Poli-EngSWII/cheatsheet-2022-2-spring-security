@@ -248,7 +248,74 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 ```
 
 ### Autorização (com roles) de RestControllers e Beans
+
+É possível adicionar filtros de autorização em endpoints ou controllers, configurando o objeto HttpSecurity dentro da classe WebSecurityConfig. Assim, o Spring irá disponibilizar os recursos para apenas os usuários que, além de autenticados, possuam os privilégios(roles) corretos(estejam autorizados). É uma configuração bem flexível, que permite escolher quais recursos estão autorizados para quais roles de modo explícito.
+
 ### Exemplos
+```java
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.authorizeRequests()
+            .antMatchers("/").hasAnyAuthority("USER", "CREATOR", "EDITOR", "ADMIN")
+            .antMatchers("/new").hasAnyAuthority("ADMIN", "CREATOR")
+            .antMatchers("/edit/**").hasAnyAuthority("ADMIN", "EDITOR")
+            .antMatchers("/delete/**").hasAuthority("ADMIN")
+            .anyRequest().authenticated()
+            .and()
+            .formLogin().permitAll()
+            .and()
+            .logout().permitAll()
+            .and()
+            .exceptionHandling().accessDeniedPage("/403")
+            ;
+    }
+```
+Na configuração acima, temos definido, por exemplo, que apenas os usuários com a role ADMIN são capazes de acessar os recursos sob o path "/delete". Temos também que o path base da aplicação é acessível por qualquer role autenticada. 
+
+Para estabelecer as roles, inicialmente definimos uma model para as roles:
+
+```java
+public class Role {
+    private Integer id;
+     
+    private String name;
+    public Integer getId() {
+        return id;
+    }
+     
+}
+```
+
+Supondo que o projeto possua o registro das contas e suas respectivas permissões em banco de dados, usando o JPA, por exemplo, assumimos que as roles serão buscadas da base via alguma query.
+Sobrescrevemos o método getAuthorities da interface UserDetails:
+
+```java
+    
+public class MyUserDetails implements UserDetails {
+ 
+    private User user;
+     
+    public MyUserDetails(User user) {
+        this.user = user;
+    }
+ 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        Set<Role> roles = user.getRoles();
+        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+         
+        for (Role role : roles) {
+            authorities.add(new SimpleGrantedAuthority(role.getName()));
+        }
+         
+        return authorities;
+    }
+}
+```
+
+Com essas classes e métodos disponíveis, o Spring irá buscar as credenciais e roles no banco quando o usuário estiver autenticado e confrontará suas roles com as exigidas pelos matchers. Caso o usuário esteja apto, o recurso é liberado, caso contrário, é lançado o código 403(Forbidden).
+
+
 
 ### Autenticação com OAuth e Token
 ### Exemplos
