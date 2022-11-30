@@ -211,7 +211,55 @@ A tradução de "*roles*" é "papel", no sentido de "papel de um ator". Dentro d
 ## Cookbook
 
 ### Como configurar
-### Exemplos
+
+Para começar a usar o Spring Security, é necessário adicioná-lo ao projeto no `pom.xml`:
+
+```xml
+<dependency>
+  <groupId>org.springframework.boot</groupId>
+  <artifactId>spring-boot-starter-security</artifactId>
+</dependency>
+<dependency>
+  <groupId>org.springframework.security</groupId>
+  <artifactId>spring-security-test</artifactId>
+  <scope>test</scope>
+</dependency>
+```
+
+Após, a configuração propriamente dita é feita através de uma classe anotada com `@Configuration` e `@EnableWebSecurity`:
+
+```java
+@Configuration
+@EnableWebSecurity
+public class WebSecurityConfig {
+	@Bean
+	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+		/* setup da cadeia de filtros, explicada anteriormente */
+	}
+
+	@Bean
+	public UserDetailsService userDetailsService() {
+		/* setup dos detalhes do usuário, também explicada anteriormente */
+	}
+
+	/* coloque mais Beans conforme a necessidade */
+}
+```
+
+Finalmente, registre o Spring Security no `ApplicationContext`. Por exemplo, se o Sprint MVC está sendo usado:
+
+```java
+public class MvcWebApplicationInitializer extends
+		AbstractAnnotationConfigDispatcherServletInitializer {
+
+	@Override
+	protected Class<?>[] getRootConfigClasses() {
+		return new Class[] { WebSecurityConfig.class };
+	}
+
+	// ... other overrides ...
+}
+```
 
 ### Autenticação com User Details
 
