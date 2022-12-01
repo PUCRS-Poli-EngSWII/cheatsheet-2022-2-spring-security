@@ -419,6 +419,3 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
     }
 }
 ```
-
-### Autorização (com roles) de RestControllers e Beans
-### Exemplos
